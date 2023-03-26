@@ -1,0 +1,13 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Stocks Page {% endblock %}
+{% block content %}
+<form action="/home" method="post">
+    {% csrf_token %}
+    {{form|crispy}}
+    <input type="submit" value="Submit">
+</form>
+<h1>{{stocks}}</h1>
+<h1>{{predict}}</h1>
+
+{% endblock %}
