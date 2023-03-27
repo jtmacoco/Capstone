@@ -64,6 +64,8 @@ def stocks(request,sid):
     context['form']=form
     return render(request,'main/stocks.html',context)
 
+def benchmark(request):
+    return render(request,'main/benchmark.html')
 
 def sign_up(request):
     if request.method == 'POST':
