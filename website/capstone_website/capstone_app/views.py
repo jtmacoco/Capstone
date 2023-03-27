@@ -1,5 +1,9 @@
+import json
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
+import requests
+import urllib.request
+import urllib3
 from . forms import RegisterForm
 from . forms import StocksForm
 from django.contrib.auth import login, logout, authenticate
@@ -41,6 +45,8 @@ def stocks(request,sid):
     s=yf.Ticker(sid)
     stock=s.history(start="1970-01-01")
     stock_close=stock[['Close']]
+    open_close=stock[['Open','Close']]
+    graph=px.line(open_close,x=open_close.index,y=open_close.columns[:])
     scaler = MinMaxScaler(feature_range=(0,1))
     scaler.fit_transform(stock_close)
     prev=stock_close[-30:].values
@@ -53,9 +59,11 @@ def stocks(request,sid):
     predicted=scaler.inverse_transform(predicted)
     context={}
     context['stocks']=sid
-    context['predict']=float(predicted)
+    context['predict']=round(float(predicted),2)
+    context['graph']=graph.to_html()
     context['form']=form
     return render(request,'main/stocks.html',context)
+
 
 def sign_up(request):
     if request.method == 'POST':

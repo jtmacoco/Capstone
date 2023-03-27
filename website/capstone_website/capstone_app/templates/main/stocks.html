@@ -5,9 +5,11 @@
 <form action="/home" method="post">
     {% csrf_token %}
     {{form|crispy}}
-    <input type="submit" value="Submit">
+    <input type="submit" class="btn btn-success" value="Submit">
 </form>
-<h1>{{stocks}}</h1>
-<h1>{{predict}}</h1>
+<h1 class="text-center">{{stocks}}</h1>
+{{graph|safe}}
+<h2 class="text-center">Predicted Price For Tomorrow:</h2>
+<h3 class="text-center">{{predict}} USD</h3>
 
 {% endblock %}
