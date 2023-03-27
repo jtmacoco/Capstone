@@ -29,7 +29,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/jtm613/spring23/capstone/website/my_venv"
+set -gx VIRTUAL_ENV "/Users/jtm613/spring23/capstone/Capstone/website/my_venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
