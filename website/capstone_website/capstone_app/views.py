@@ -65,8 +65,13 @@ def stocks(request,sid):
     return render(request,'main/stocks.html',context)
 
 def benchmark(request):
-    return render(request,'main/benchmark.html')
+    rmse=2.704493284395157
+    test_context={}
+    test_context['rmse']=rmse
+    return render(request,'main/benchmark.html',test_context)
 
+def login(request):
+    return render(request,'registration/login.html')
 def sign_up(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
