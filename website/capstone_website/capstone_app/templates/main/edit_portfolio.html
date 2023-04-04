@@ -1,14 +1,21 @@
 {% extends 'main/base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}Portfolio Page {% endblock %}
+{% block title %}Edit Portfolio Page {% endblock %}
 {% block content %}
-<a href="/edit_portfolio" class="btn btn-secondary float-end" role="button">Edit Portfolio</a>
+<a href="/portfolio" class="btn btn-secondary float-end" role="button">Finished</a>
 <div class="row allign-items-center" style="padding: 5%;">
   {% for key, values in stock_data.items %}
     <div class="col-md-3">
       <div class="card text-white bg-dark mb-3" style="max-width:20rem;">
           <div class="card-body">
-              <h5 class="card-title">{{ key }}</h5>
+              <h5 class="card-title">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-danger btn-sm float-end" name = {{key}} value="delete">
+                </form>
+                {{ key }}
+               
+              </h5>
                 <p class="card-text">Predicted Price For Tomorrow: </p>
                 <p class = "card-text ">{{ values }} USD</p>
           </div>

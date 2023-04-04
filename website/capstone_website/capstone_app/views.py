@@ -43,14 +43,11 @@ def portfolio(request):
     stock_obj=models.Portfolio.stocks
     cur_user=request.user
     portfolio_dict={}
-    test=[]
-    test.append(stock_obj)
     for p_object in portfolio_objects:
         if cur_user==p_object.author:
             portfolio_dict[p_object.stocks.stock_name]=p_object.stocks.closing_price
     context={}
     context['stock_data']=portfolio_dict
-    context['test']=test
     return render(request,'main/portfolio.html',context)
 
 def stocks(request,sid):
@@ -119,3 +116,15 @@ def sign_up(request):
     else:
         form = RegisterForm()
     return render(request, 'registration/sign_up.html',{"form":form})
+
+def edit_portfolio(request):
+    portfolio_objects=models.Portfolio.objects.all()
+    stock_obj=models.Portfolio.stocks
+    cur_user=request.user
+    portfolio_dict={}
+    for p_object in portfolio_objects:
+        if cur_user==p_object.author:
+            portfolio_dict[p_object.stocks.stock_name]=p_object.stocks.closing_price
+    context={}
+    context['stock_data']=portfolio_dict
+    return render (request,'main/edit_portfolio.html',context)
