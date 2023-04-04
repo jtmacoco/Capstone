@@ -39,7 +39,19 @@ def home(request):
     return render(request,'main/home.html',{'form':form})
 
 def portfolio(request):
-    return render(request,'main/portfolio.html')
+    portfolio_objects=models.Portfolio.objects.all()
+    stock_obj=models.Portfolio.stocks
+    cur_user=request.user
+    portfolio_dict={}
+    test=[]
+    test.append(stock_obj)
+    for p_object in portfolio_objects:
+        if cur_user==p_object.author:
+            portfolio_dict[p_object.stocks.stock_name]=p_object.stocks.closing_price
+    context={}
+    context['stock_data']=portfolio_dict
+    context['test']=test
+    return render(request,'main/portfolio.html',context)
 
 def stocks(request,sid):
 #    if request.method =='POST':
@@ -63,12 +75,14 @@ def stocks(request,sid):
     context['graph']=graph.to_html()
     context['form']=form
     return render(request,'main/stocks.html',context)
+
 def get_graph(sid):
     s=yf.Ticker(sid)
     stock=s.history(start="1970-01-01")
     open_close=stock[['Open','Close']]
     graph=px.line(open_close,x=open_close.index,y=open_close.columns[:]) 
     return graph
+
 def get_predicted_price(sid):
     s=yf.Ticker(sid)
     stock=s.history(start="1970-01-01")
@@ -84,6 +98,7 @@ def get_predicted_price(sid):
     predicted=model.predict(input)
     predicted=scaler.inverse_transform(predicted)
     return predicted
+
 def benchmark(request):
     rmse=2.704493284395157
     test_context={}
@@ -92,6 +107,7 @@ def benchmark(request):
 
 def login(request):
     return render(request,'registration/login.html')
+
 def sign_up(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
