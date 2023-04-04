@@ -2,13 +2,15 @@
 {% load crispy_forms_tags %}
 {% block title %}Portfolio Page {% endblock %}
 {% block content %}
-<div class="row">
+<input type="submit" class="btn btn-danger btn-lg float-end" name = "edit_profile" value="edit profile">
+<div class="row allign-items-center" style="padding: 5%;">
   {% for key, values in stock_data.items %}
-    <div class="col-md-4">
-      <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+    <div class="col-md-3">
+      <div class="card text-white bg-dark mb-3" style="max-width:20rem;">
           <div class="card-body">
               <h5 class="card-title">{{ key }}</h5>
-                <p class="card-text">{{ values }}</p>
+                <p class="card-text">Predicted Price For Tomorrow: </p>
+                <p class = "card-text ">{{ values }} USD</p>
           </div>
       </div>
     </div>

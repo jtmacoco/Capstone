@@ -54,7 +54,7 @@ def portfolio(request):
     return render(request,'main/portfolio.html',context)
 
 def stocks(request,sid):
-#    if request.method =='POST':
+    sid.upper()
     if 'Submit' in request.POST:
         form=StocksForm(request.POST)
         if form.is_valid():
@@ -65,12 +65,12 @@ def stocks(request,sid):
     predicted_price=get_predicted_price(sid)
     graph=get_graph(sid)
     if 'add to portfolio' in request.POST:
-        stock_data = models.Stock(stock_name=sid,closing_price=predicted_price)
+        stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
         stock_data.save()
         portfolio = models.Portfolio(author=request.user,stocks=stock_data)
         portfolio.save()
     context={}
-    context['stocks']=sid
+    context['stocks']=sid.upper()
     context['predict']=round(float(predicted_price),2)
     context['graph']=graph.to_html()
     context['form']=form
@@ -97,7 +97,7 @@ def get_predicted_price(sid):
     input=np.reshape(input,(input.shape[0],input.shape[1],1))
     predicted=model.predict(input)
     predicted=scaler.inverse_transform(predicted)
-    return predicted
+    return round(float(predicted),2)
 
 def benchmark(request):
     rmse=2.704493284395157
