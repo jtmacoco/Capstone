@@ -21,9 +21,12 @@
                         <a class="nav-link" href="/benchmark">benchmark</a>
                     </li>
                     {% if user.is_authenticated %}
-                    <span class="navbar-text">Logged in as {{user.username}} |</span>"
                     <li class="nav-item">
-                        <a class="nav-link" href="/logout">logout</a>
+                        <a class="nav-link" href="/portfolio">portfolio</a>
+                    </li>
+                    <span class="navbar-text">Logged in as {{user.username}} |</span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout/">logout</a>
                     </li>
                     {%else%}
                     <li class="nav-item">
