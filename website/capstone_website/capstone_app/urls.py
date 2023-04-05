@@ -9,5 +9,6 @@ urlpatterns = [
     path('home',views.home,name='home'),
     path('edit_portfolio',views.edit_portfolio,name='edit_portfolio'),
     path('portfolio',views.portfolio,name='portfolio'),
+    path('delete_stock/<str:sid>',views.delete_stock,name='delete_stock'),
     path('<str:sid>', views.stocks,name='stocks_pages'),
 ]

@@ -1,3 +1,5 @@
+from gc import get_objects
+from django.shortcuts import get_object_or_404
 import json
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
@@ -119,12 +121,23 @@ def sign_up(request):
 
 def edit_portfolio(request):
     portfolio_objects=models.Portfolio.objects.all()
-    stock_obj=models.Portfolio.stocks
     cur_user=request.user
     portfolio_dict={}
     for p_object in portfolio_objects:
         if cur_user==p_object.author:
             portfolio_dict[p_object.stocks.stock_name]=p_object.stocks.closing_price
+            p_id=p_object.id
     context={}
     context['stock_data']=portfolio_dict
+    context['p_id']=p_id
     return render (request,'main/edit_portfolio.html',context)
+
+def delete_stock(request,sid):
+    portfolio_objects=models.Portfolio.objects.all()
+    cur_user = request.user
+    for p_object in portfolio_objects:
+        if cur_user == p_object.author and sid == p_object.stocks.stock_name:
+            port_id = p_object.id
+    stock=models.Portfolio.objects.get(pk=port_id)
+    stock.delete()
+    return redirect('edit_portfolio')
