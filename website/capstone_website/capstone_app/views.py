@@ -15,7 +15,6 @@ import pandas as pd
 import yfinance as yf
 from joblib import load
 from tensorflow import keras
-#impoprt libraries used
 import pandas as pd
 import datetime
 from sklearn.preprocessing import MinMaxScaler
@@ -27,6 +26,9 @@ from keras.models import *
 import tensorflow as tf
 from . import models
 from django.contrib.auth.models import User
+from django.contrib import messages
+from datetime import timedelta
+from django.utils.timezone import now
 model=keras.models.load_model('capstone_app/lstm_models')
 # Create your views here.
 def home(request):
@@ -63,6 +65,7 @@ def stocks(request,sid):
         form=StocksForm()
     predicted_price=get_predicted_price(sid)
     graph=get_graph(sid)
+    cur_user=request.user
     if 'add to portfolio' in request.POST:
         stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
         stock_data.save()
@@ -74,6 +77,14 @@ def stocks(request,sid):
     context['graph']=graph.to_html()
     context['form']=form
     return render(request,'main/stocks.html',context)
+
+def check_duplicates(sid,user_name):
+    portfolio_objects=models.Portfolio.objects.all()
+    for p_object in portfolio_objects:
+        if p_object.author == user_name and p_object.stocks.stock_name == sid:
+            return True
+        else:
+            return False
 
 def get_graph(sid):
     s=yf.Ticker(sid)
@@ -141,3 +152,6 @@ def delete_stock(request,sid):
     stock=models.Portfolio.objects.get(pk=port_id)
     stock.delete()
     return redirect('edit_portfolio')
+
+#/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
+#/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/manage.py
