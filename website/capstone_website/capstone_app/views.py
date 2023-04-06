@@ -67,10 +67,16 @@ def stocks(request,sid):
     graph=get_graph(sid)
     cur_user=request.user
     if 'add to portfolio' in request.POST:
-        stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
-        stock_data.save()
-        portfolio = models.Portfolio(author=request.user,stocks=stock_data)
-        portfolio.save()
+        stock_data = models.Stock.objects.filter(stock_name=sid)
+        if stock_data.exists() == False:
+            stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
+            stock_data.save()
+        else:
+            stock_data=models.Stock.objects.get(stock_name=sid)
+        portfolio = models.Portfolio.objects.filter(author=request.user, stocks = stock_data)
+        if portfolio.exists() == False:
+            portfolio = models.Portfolio(author=request.user,stocks=stock_data)
+            portfolio.save()
     context={}
     context['stocks']=sid.upper()
     context['predict']=round(float(predicted_price),2)

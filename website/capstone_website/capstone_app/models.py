@@ -10,8 +10,6 @@ class Stock(models.Model):
 
 class Portfolio(models.Model):
     author = models.ForeignKey(auth_user,on_delete=models.CASCADE)
-    stocks = models.OneToOneField(Stock,on_delete=models.CASCADE)
-    class Meta:
-        unique_together = [['author','stocks']]
+    stocks = models.ForeignKey(Stock,on_delete=models.CASCADE)
     def __str__(self):
         return str(self.author) + " Portfolio: " + str(self.stocks)
