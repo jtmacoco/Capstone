@@ -129,8 +129,8 @@ def sign_up(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user=form.save()
-            login(request,user)
-            return redirect('/home')
+            login(request)
+            return redirect('/login/')
 
     else:
         form = RegisterForm()
@@ -140,6 +140,7 @@ def edit_portfolio(request):
     portfolio_objects=models.Portfolio.objects.all()
     cur_user=request.user
     portfolio_dict={}
+    p_id = -1
     for p_object in portfolio_objects:
         if cur_user==p_object.author:
             portfolio_dict[p_object.stocks.stock_name]=p_object.stocks.closing_price
