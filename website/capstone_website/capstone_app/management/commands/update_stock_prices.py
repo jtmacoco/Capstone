@@ -1,3 +1,4 @@
+import os
 from django.core.management.base import BaseCommand
 import datetime
 import time
@@ -18,7 +19,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from datetime import timedelta
 from django.utils.timezone import now
-model=keras.models.load_model('capstone_app/lstm_models')
+model = keras.models.load_model('/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/capstone_app/lstm_models/')
 def get_predicted_price(sid):
     s=yf.Ticker(sid)
     stock=s.history(start="1970-01-01")
