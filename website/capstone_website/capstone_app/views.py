@@ -29,6 +29,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from datetime import timedelta
 from django.utils.timezone import now
+import asyncio
+
 model=keras.models.load_model('capstone_app/lstm_models')
 # Create your views here.
 def home(request):
@@ -36,7 +38,12 @@ def home(request):
         form=StocksForm(request.POST)
         if form.is_valid():
             stock = request.POST['stock']
-            return HttpResponseRedirect(stock)
+            tick=yf.Ticker(stock)
+            if not check_stock_symbol(stock):
+                messages.error(request, 'Stock does not exist')
+                return redirect('/home')
+            else:
+                return HttpResponseRedirect(stock)
     else:
         form=StocksForm()
     #return render(request,'main/home.html')
@@ -56,6 +63,9 @@ def portfolio(request):
 
 def stocks(request,sid):
     sid.upper()
+    if not check_stock_symbol(sid):
+        messages.error(request, 'Stock does not exist')
+        return redirect('/home')
     if 'Submit' in request.POST:
         form=StocksForm(request.POST)
         if form.is_valid():
@@ -83,6 +93,19 @@ def stocks(request,sid):
     context['graph']=graph.to_html()
     context['form']=form
     return render(request,'main/stocks.html',context)
+
+API_KEY = "MO4HBDRDZNNUGH79 "
+def check_stock_symbol(symbol):
+    url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey=YOUR_API_KEY"
+    response = requests.get(url)
+    data = response.json()
+    if "bestMatches" in data:
+        matches = data["bestMatches"]
+        if len(matches) > 0:
+            for match in matches:
+                if match["1. symbol"].lower() == symbol.lower():
+                    return True
+    return False
 
 def check_duplicates(sid,user_name):
     portfolio_objects=models.Portfolio.objects.all()
