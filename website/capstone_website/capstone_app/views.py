@@ -30,6 +30,7 @@ from django.contrib import messages
 from datetime import timedelta
 from django.utils.timezone import now
 import asyncio
+from functools import lru_cache
 
 model=keras.models.load_model('capstone_app/lstm_models')
 # Create your views here.
@@ -95,10 +96,21 @@ def stocks(request,sid):
     return render(request,'main/stocks.html',context)
 
 API_KEY = "MO4HBDRDZNNUGH79 "
-def check_stock_symbol(symbol):
+REQUESTS_TIMEOUT = 5
+
+@lru_cache(maxsize=128)
+def get_api_data(symbol):
     url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey=YOUR_API_KEY"
-    response = requests.get(url)
-    data = response.json()
+    response = requests.get(url, timeout=REQUESTS_TIMEOUT)
+    return response.json()
+
+# Check if the symbol is valid
+def check_stock_symbol(symbol):
+    if symbol.lower() == "^gspc" or symbol.lower() == "^ixic":
+        return True
+    # Get the API data from cache or make a new request
+    data = get_api_data(symbol)
+
     if "bestMatches" in data:
         matches = data["bestMatches"]
         if len(matches) > 0:
