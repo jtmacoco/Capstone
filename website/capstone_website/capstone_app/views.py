@@ -88,19 +88,28 @@ def stocks(request,sid):
         if portfolio.exists() == False:
             portfolio = models.Portfolio(author=request.user,stocks=stock_data)
             portfolio.save()
+    company_name = get_company_name(sid)
     context={}
     context['stocks']=sid.upper()
+    context['company_name']=company_name
     context['predict']=round(float(predicted_price),2)
     context['graph']=graph.to_html()
     context['form']=form
     return render(request,'main/stocks.html',context)
 
 API_KEY = "MO4HBDRDZNNUGH79 "
+def get_company_name(symbol):
+    url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey=API_KEY'
+    response = requests.get(url)
+    data = response.json()
+    company_name = data['Name']
+    return company_name
+
 REQUESTS_TIMEOUT = 5
 
 @lru_cache(maxsize=128)
 def get_api_data(symbol):
-    url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey=YOUR_API_KEY"
+    url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey=API_KEY"
     response = requests.get(url, timeout=REQUESTS_TIMEOUT)
     return response.json()
 
@@ -108,7 +117,6 @@ def get_api_data(symbol):
 def check_stock_symbol(symbol):
     if symbol.lower() == "^gspc" or symbol.lower() == "^ixic":
         return True
-    # Get the API data from cache or make a new request
     data = get_api_data(symbol)
 
     if "bestMatches" in data:
