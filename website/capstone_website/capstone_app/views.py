@@ -35,6 +35,8 @@ from functools import lru_cache
 model=keras.models.load_model('capstone_app/lstm_models')
 # Create your views here.
 def home(request):
+    predicted_price=get_predicted_price('^GSPC')
+    graph=get_graph('^GSPC')
     if request.method =='POST':
         form=StocksForm(request.POST)
         if form.is_valid():
@@ -47,8 +49,18 @@ def home(request):
                 return HttpResponseRedirect(stock)
     else:
         form=StocksForm()
+    try:
+        company_name = get_company_name("^GSPC")
+    except:
+        company_name="Stock Name not found"
+    context={}
+    context['stocks']='^GSPC'
+    context['company_name']=company_name
+    context['predict']=round(float(predicted_price),2)
+    context['graph']=graph.to_html()
+    context['form']=form
     #return render(request,'main/home.html')
-    return render(request,'main/home.html',{'form':form})
+    return render(request,'main/home.html',context)
 
 def portfolio(request):
     portfolio_objects=models.Portfolio.objects.all()
@@ -88,7 +100,10 @@ def stocks(request,sid):
         if portfolio.exists() == False:
             portfolio = models.Portfolio(author=request.user,stocks=stock_data)
             portfolio.save()
-    company_name = get_company_name(sid)
+    try:
+        company_name = get_company_name(sid)
+    except:
+        company_name="Stock Name not found"
     context={}
     context['stocks']=sid.upper()
     context['company_name']=company_name
@@ -99,6 +114,9 @@ def stocks(request,sid):
 
 API_KEY = "MO4HBDRDZNNUGH79 "
 def get_company_name(symbol):
+    if symbol.upper()== "^GSPC":
+        company_name="S&P 500"
+        return company_name
     url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey=API_KEY'
     response = requests.get(url)
     data = response.json()
@@ -113,7 +131,6 @@ def get_api_data(symbol):
     response = requests.get(url, timeout=REQUESTS_TIMEOUT)
     return response.json()
 
-# Check if the symbol is valid
 def check_stock_symbol(symbol):
     if symbol.lower() == "^gspc" or symbol.lower() == "^ixic":
         return True
