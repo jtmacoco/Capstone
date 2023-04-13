@@ -2,6 +2,15 @@
 {% load crispy_forms_tags %}
 {% block title %}Stocks Page {% endblock %}
 {% block content %}
+<ul>
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-danger {{ message.tags }}" role="alert">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+</ul>
 <form method="post">
     {% csrf_token %}
     {{form|crispy}}

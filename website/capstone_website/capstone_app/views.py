@@ -78,7 +78,7 @@ def stocks(request,sid):
     sid.upper()
     if not check_stock_symbol(sid):
         messages.error(request, 'Stock does not exist')
-        return redirect('/home')
+        return redirect(request.META.get('HTTP_REFERER'))
     if 'Submit' in request.POST:
         form=StocksForm(request.POST)
         if form.is_valid():
