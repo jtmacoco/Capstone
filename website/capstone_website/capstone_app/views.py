@@ -18,6 +18,7 @@ from tensorflow import keras
 import pandas as pd
 import datetime
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 import plotly.express as px 
 import numpy as np

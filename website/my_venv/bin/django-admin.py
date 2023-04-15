@@ -1,4 +1,4 @@
-#!/Users/jtm613/spring23/capstone/website/my_venv/bin/python3
+#!/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
 # When the django-admin.py deprecation ends, remove this script.
 import warnings
 

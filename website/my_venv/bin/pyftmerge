@@ -1,4 +1,4 @@
-#!/Users/jtm613/spring23/capstone/website/my_venv/bin/python3
+#!/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
