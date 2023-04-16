@@ -16,10 +16,17 @@
     {{form|crispy}}
     <input type="submit" class="btn btn-success" name="Submit" value="Submit">
 </form>
+{% if user.is_authenticated %}
+
 <form method="post">
     {% csrf_token %}
     <input type="submit" class="btn btn-primary btn-lg float-end" name = "add to portfolio" value="add to portfolio">
 </form>
+{%else%}
+    <a  class="btn btn-primary btn-lg float-end" href="/login/">add to portfolio
+      </a>
+
+{%endif%}
 {% if company_name == "Stock Name not found" %}
 <h1 class="text-center">{{stocks}}</h1>
 {% else %}

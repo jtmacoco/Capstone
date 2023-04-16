@@ -8,4 +8,4 @@ services:
        - .:/code
     ports:
        - "8000:8000"
-    command: python3 /code/capstone_website/manage.py runserver 0.0.0.0:8000
+    command: bash -c "source /code/my_venv/bin/activate && python /code/capstone_website/manage.py runserver 0.0.0.0:8000"

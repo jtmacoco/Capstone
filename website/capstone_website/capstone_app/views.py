@@ -133,7 +133,7 @@ def get_api_data(symbol):
     return response.json()
 
 def check_stock_symbol(symbol):
-    if symbol.lower() == "^gspc" or symbol.lower() == "^ixic":
+    if symbol.lower() == "^gspc" or symbol.lower() == "^ixic" or symbol.lower() == "favicon.ico":
         return True
     data = get_api_data(symbol)
 
