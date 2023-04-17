@@ -3,23 +3,29 @@
 {% block title %}Stocks Page {% endblock %}
 {% block content %}
 <ul>
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-danger {{ message.tags }}" role="alert">
-          {{ message }}
-        </div>
-      {% endfor %}
-    {% endif %}
-    </ul>
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-danger {{ message.tags }}" role="alert">
+    {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+</ul>
 <form method="post">
-    {% csrf_token %}
-    {{form|crispy}}
-    <input type="submit" class="btn btn-success" name="Submit" value="Submit">
+  {% csrf_token %}
+  {{form|crispy}}
+  <input type="submit" class="btn btn-success" name="Submit" value="Submit">
 </form>
+{% if user.is_authenticated %}
 <form method="post">
-    {% csrf_token %}
-    <input type="submit" class="btn btn-primary btn-lg float-end" name = "add to portfolio" value="add to portfolio">
+  {% csrf_token %}
+  <input type="submit" class="btn btn-primary btn-lg float-end" name="add to portfolio" value="add to portfolio">
 </form>
+{%else%}
+<a class="btn btn-primary btn-lg float-end" href="/login/">add to portfolio
+</a>
+
+{%endif%}
 {% if company_name == "Stock Name not found" %}
 <h1 class="text-center">{{stocks}}</h1>
 {% else %}

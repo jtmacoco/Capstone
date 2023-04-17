@@ -36,9 +36,10 @@ from functools import lru_cache
 model=keras.models.load_model('capstone_app/lstm_models')
 # Create your views here.
 def home(request):
+    sid = '^GSPC'
     predicted_price=get_predicted_price('^GSPC')
     graph=get_graph('^GSPC')
-    if request.method =='POST':
+    if 'Submit' in request.POST:
         form=StocksForm(request.POST)
         if form.is_valid():
             stock = request.POST['stock']
@@ -50,6 +51,17 @@ def home(request):
                 return HttpResponseRedirect(stock)
     else:
         form=StocksForm()
+    if 'add to portfolio' in request.POST:
+        stock_data = models.Stock.objects.filter(stock_name=sid)
+        if stock_data.exists() == False:
+            stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
+            stock_data.save()
+        else:
+            stock_data=models.Stock.objects.get(stock_name=sid)
+        portfolio = models.Portfolio.objects.filter(author=request.user, stocks = stock_data)
+        if portfolio.exists() == False:
+            portfolio = models.Portfolio(author=request.user,stocks=stock_data)
+            portfolio.save()
     try:
         company_name = get_company_name("^GSPC")
     except:
