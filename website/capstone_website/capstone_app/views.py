@@ -233,5 +233,7 @@ def delete_stock(request,sid):
     stock.delete()
     return redirect('edit_portfolio')
 
+def performance(request):
+    return render(request,"main/performance.html")
 #/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
 #/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/manage.py
