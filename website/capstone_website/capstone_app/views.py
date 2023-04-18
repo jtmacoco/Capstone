@@ -32,6 +32,7 @@ from datetime import timedelta
 from django.utils.timezone import now
 import asyncio
 from functools import lru_cache
+from datetime import date
 
 model=keras.models.load_model('capstone_app/lstm_models')
 # Create your views here.
@@ -103,6 +104,17 @@ def stocks(request,sid):
     graph=get_graph(sid)
     cur_user=request.user
     if 'add to portfolio' in request.POST:
+        if check_portoflio_exist(cur_user) == False:
+            print("IT DO NOT EXIST")
+            performance_object=models.Performance()
+            start_date=date.today()
+            name=str(cur_user)
+            stock_price_list=[]
+            predicted_price_list=[]
+            performance_object.set_data(name,start_date,stock_price_list,predicted_price_list)
+            performance_object.save()
+        else:
+            print("IT DOES EXIST")
         stock_data = models.Stock.objects.filter(stock_name=sid)
         if stock_data.exists() == False:
             stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
@@ -233,6 +245,13 @@ def delete_stock(request,sid):
     stock.delete()
     return redirect('edit_portfolio')
 
+def check_portoflio_exist(author):
+   portfolio_objects=models.Portfolio.objects.all()
+   cur_user = author
+   for p_object in portfolio_objects:
+        if cur_user == p_object.author:
+            return True
+   return False
 def performance(request):
     return render(request,"main/performance.html")
 #/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python

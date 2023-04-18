@@ -22,10 +22,11 @@ class Performance(models.Model):
     def set_data(self,name,start_date,stock_price_list,predicted_price_list):
         data_dict={
             "name":name,
-            "start_date":start_date,
+            "start_date":start_date.isoformat(),
             "stock_price_list":stock_price_list,
             "predicted_price_list":predicted_price_list,
         }
+        self.performance_data = data_dict
 
     def get_name(self):
         data_dict=json.loads(self.data)
