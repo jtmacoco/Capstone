@@ -29,15 +29,15 @@ class Performance(models.Model):
         self.performance_data = data_dict
 
     def get_name(self):
-        data_dict=json.loads(self.data)
+        data_dict=self.performance_data
         return data_dict['name']
 
-    def get_name(self):
-        data_dict=json.loads(self.data)
+    def get_stock_price_list(self):
+        data_dict=self.performance_data
         return data_dict['stock_price_list']
 
-    def get_name(self):
-        data_dict=json.loads(self.data)
+    def get_predicted_price_list(self):
+        data_dict=self.performance_data
         return data_dict['predicted_price_list']
        
     def get_start_date(self):

@@ -252,7 +252,44 @@ def check_portoflio_exist(author):
         if cur_user == p_object.author:
             return True
    return False
+
+def get_update_predicted():
+    portfolio_objects=models.Portfolio.objects.all()
+    performance={}
+    for portfolio in portfolio_objects:
+        performance.setdefault(str(portfolio.author), 0)
+        performance[str(portfolio.author)]+=portfolio.stocks.closing_price
+    return performance
+
+def get_update_stocks():
+    portfolio_objects=models.Portfolio.objects.all()
+    performance={}
+    for portfolio in portfolio_objects:
+        performance.setdefault(str(portfolio.author), 0)
+        stock=portfolio.stocks.stock_name
+        stock_data=yf.Ticker(stock)
+        stock_history = stock_data.history(period='1d')
+        performance[str(portfolio.author)]+=float(stock_history['Close'].iloc[-1])
+    return performance
+
 def performance(request):
-    return render(request,"main/performance.html")
+    performance_dict=get_update_predicted()
+    performance_dict_stocks=get_update_stocks()
+    performance_keys=list(performance_dict)
+    performances = models.Performance.objects.all()
+    total_values=[]
+    total_values_stocks=[]
+    for performance in performances:
+        print(performance.get_name())
+        if performance.get_name() in performance_keys:
+            total_values.append(performance_dict[performance.get_name()])
+            total_values_stocks.append(performance_dict_stocks[performance.get_name()])
+    context={}
+    context['performance']=get_update_predicted()
+    context['performance_stocks']=performance_dict_stocks
+    context['total_values']=total_values
+    context['total_values_stocks']=total_values_stocks
+    context['keys']=performance_keys
+    return render(request,"main/performance.html",context)
 #/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
 #/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/manage.py
