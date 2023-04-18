@@ -88,7 +88,7 @@ def portfolio(request):
     return render(request,'main/portfolio.html',context)
 
 def stocks(request,sid):
-    sid.upper()
+    sid=sid.upper()
     if not check_stock_symbol(sid):
         messages.error(request, 'Stock does not exist')
         return redirect(request.META.get('HTTP_REFERER'))
