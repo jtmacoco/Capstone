@@ -1,10 +1,10 @@
 {% extends 'main/base.html' %}
 {% block title %}{% endblock %}
 {% block content %}
-<h1>Home Page!</h1>
-{{performance}}
-{{keys}}
-{{total_values}}
-{{performance_stocks}}
-<h1>{{total_values_stocks}}</h1>
+<a href="/portfolio" class="btn btn-secondary float-end" role="button" >back</a>
+{% if flag  %}
+{{graph|safe}}
+{% else %}
+<h1>Wait a full 24 hours as more data is required</h1>
+{%endif%}
 {% endblock %}

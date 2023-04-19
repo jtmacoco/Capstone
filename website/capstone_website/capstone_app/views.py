@@ -33,6 +33,8 @@ from django.utils.timezone import now
 import asyncio
 from functools import lru_cache
 from datetime import date
+import mpld3
+from plotly.subplots import make_subplots
 
 model=keras.models.load_model('capstone_app/lstm_models')
 # Create your views here.
@@ -273,23 +275,38 @@ def get_update_stocks():
     return performance
 
 def performance(request):
-    performance_dict=get_update_predicted()
-    performance_dict_stocks=get_update_stocks()
-    performance_keys=list(performance_dict)
-    performances = models.Performance.objects.all()
-    total_values=[]
-    total_values_stocks=[]
+    performances=models.Performance.objects.all()
+    cur_user=request.user
+    stock_price_list=[]
+    predicted_price_list=[]
     for performance in performances:
-        print(performance.get_name())
-        if performance.get_name() in performance_keys:
-            total_values.append(performance_dict[performance.get_name()])
-            total_values_stocks.append(performance_dict_stocks[performance.get_name()])
+        if performance.get_name() == str(cur_user):
+            stock_price_list=performance.get_stock_price_list()
+            predicted_price_list=performance.get_predicted_price_list()
+            start_date=performance.get_start_date()
+    list_size=len(stock_price_list)
+    dates = [start_date + timedelta(days=i) for i in range(list_size)]
+    graph=None
+    new_predicted_list=[]
+    new_stock_list=[]
+    if list_size < 2:
+        flag = False
+        graph = make_subplots(rows=1, cols=1)
+        graph.update_layout(title='Performance Data')
+    else:
+        flag = True
+        new_stock_list=stock_price_list[1:]
+        new_predicted_list=predicted_price_list[:-1]
+        list_size=len(new_stock_list)
+        df = pd.DataFrame({'Date': dates, 'Actual Portfolio Price': new_stock_list, 'Predicted Portfolio Price': new_predicted_list})
+        graph = px.scatter(df, x='Date', y=['Actual Portfolio Price', 'Predicted Portfolio Price'], title='Performance Data')
+
+    
     context={}
-    context['performance']=get_update_predicted()
-    context['performance_stocks']=performance_dict_stocks
-    context['total_values']=total_values
-    context['total_values_stocks']=total_values_stocks
-    context['keys']=performance_keys
+    context['flag']=flag
+    context['graph']=graph.to_html()
+    context['predicted']=new_predicted_list
+    context['stock']=new_stock_list
     return render(request,"main/performance.html",context)
 #/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
 #/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/manage.py

@@ -41,6 +41,6 @@ class Performance(models.Model):
         return data_dict['predicted_price_list']
        
     def get_start_date(self):
-        data_dict=json.loads(self.data)
+        data_dict=self.performance_data
         return date.fromisoformat(data_dict['start_date'])
 
