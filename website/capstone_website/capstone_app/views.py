@@ -64,6 +64,7 @@ def home(request):
             name=str(cur_user)
             stock_price_list=[]
             predicted_price_list=[]
+            performance_object.name = name
             performance_object.set_data(name,start_date,stock_price_list,predicted_price_list)
             performance_object.save()
             flag=True
@@ -87,9 +88,9 @@ def home(request):
             for performance in performances:
                 stock_price_list = performance.performance_data.get('stock_price_list', [])
                 predicted_price_list = performance.performance_data.get('predicted_price_list', [])
-                if performance.get_name() in performance_keys:
-                    stock_price_list.append(stock_dict[performance.get_name()])
-                    predicted_price_list.append(predicted_dict[performance.get_name()])
+                if str(cur_user) in performance_keys and str(cur_user) == performance.get_name():
+                    stock_price_list.append(stock_dict[str(cur_user)])
+                    predicted_price_list.append(predicted_dict[str(cur_user)])
 
                 performance.performance_data['stock_price_list'] = stock_price_list
                 performance.performance_data['predicted_price_list'] = predicted_price_list
@@ -143,6 +144,7 @@ def stocks(request,sid):
             name=str(cur_user)
             predicted_price_list=[]
             stock_price_list=[]
+            performance_object.name = name
             performance_object.set_data(name,start_date,stock_price_list,predicted_price_list)
             performance_object.save()
             flag=True
@@ -166,9 +168,9 @@ def stocks(request,sid):
             for performance in performances:
                 stock_price_list = performance.performance_data.get('stock_price_list', [])
                 predicted_price_list = performance.performance_data.get('predicted_price_list', [])
-                if performance.get_name() in performance_keys:
-                    stock_price_list.append(stock_dict[performance.get_name()])
-                    predicted_price_list.append(predicted_dict[performance.get_name()])
+                if str(cur_user) in performance_keys and str(cur_user) == performance.get_name():
+                    stock_price_list.append(stock_dict[str(cur_user)])
+                    predicted_price_list.append(predicted_dict[str(cur_user)])
 
                 performance.performance_data['stock_price_list'] = stock_price_list
                 performance.performance_data['predicted_price_list'] = predicted_price_list

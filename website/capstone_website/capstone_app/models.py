@@ -17,7 +17,11 @@ class Portfolio(models.Model):
         return str(self.author) + " Portfolio: " + str(self.stocks)
 
 class Performance(models.Model):
+    name = models.CharField(max_length=255)
     performance_data=models.JSONField()
+
+    def __str__(self):
+        return str(self.name) + " Performance " 
 
     def set_data(self,name,start_date,stock_price_list,predicted_price_list):
         data_dict={
@@ -26,11 +30,11 @@ class Performance(models.Model):
             "stock_price_list":stock_price_list,
             "predicted_price_list":predicted_price_list,
         }
+        self.name = name
         self.performance_data = data_dict
 
     def get_name(self):
-        data_dict=self.performance_data
-        return data_dict['name']
+        return self.name
 
     def get_stock_price_list(self):
         data_dict=self.performance_data
