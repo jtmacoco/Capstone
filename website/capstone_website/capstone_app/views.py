@@ -47,7 +47,6 @@ def home(request):
         if form.is_valid():
             stock = request.POST['stock']
             tick=yf.Ticker(stock)
-            print(tick.history())
             if not check_stock_symbol(stock):
                 messages.error(request, 'Stock does not exist')
                 return redirect('/home')
