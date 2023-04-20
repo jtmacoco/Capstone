@@ -33,10 +33,10 @@ from django.utils.timezone import now
 import asyncio
 from functools import lru_cache
 from datetime import date
-import mpld3
 from plotly.subplots import make_subplots
 
-model=keras.models.load_model('capstone_app/lstm_models')
+model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
+#model=keras.models.load_model('capstone_app/lstm_models')
 # Create your views here.
 def home(request):
     sid = '^GSPC'
@@ -47,6 +47,7 @@ def home(request):
         if form.is_valid():
             stock = request.POST['stock']
             tick=yf.Ticker(stock)
+            print(tick.history())
             if not check_stock_symbol(stock):
                 messages.error(request, 'Stock does not exist')
                 return redirect('/home')
