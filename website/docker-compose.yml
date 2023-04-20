@@ -1,10 +1,29 @@
-version: '3.9'
+version: '3'
 
 services:
   web:
+    restart: always
     build: .
     volumes:
        - .:/code
-    ports:
-       - "8000:8000"
+    links:
+       - redis:redis
+    expose:
+       - 8000
+    working_dir: /code/capstone_website
     command: bash -c "source /code/my_venv/bin/activate && python /code/capstone_website/manage.py runserver 0.0.0.0:8000"
+
+  nginx:
+   restart: always
+   build: ./nginx/
+   depends_on:
+      - web
+   ports:
+      - 80:80
+   links:
+      - web:web
+
+  redis:
+   image: redis:latest
+   expose:
+      - 6379
