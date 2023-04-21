@@ -1,0 +1,2 @@
+cd /var/www/html/Capstone/website/capstone_website/ && python3 /var/www/html/Capstone/website/capstone_website/manage.py update_stock_prices
+cd /var/www/html/Capstone/website/capstone_website/ && python3 /var/www/html/Capstone/website/capstone_website/manage.py update_performance_prices

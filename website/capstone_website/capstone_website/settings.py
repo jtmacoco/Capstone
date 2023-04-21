@@ -27,7 +27,7 @@ DEBUG = True
 
 #ALLOWED_HOSTS = ['0.0.0.0']
 #ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ["34.134.65.147"]
+ALLOWED_HOSTS = ['35.203.145.183']
 
 # Application definition
 
