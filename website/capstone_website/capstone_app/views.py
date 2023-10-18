@@ -35,8 +35,8 @@ from functools import lru_cache
 from datetime import date
 from plotly.subplots import make_subplots
 
-#model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
-model=keras.models.load_model('capstone_app/lstm_models')
+model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
+#model=keras.models.load_model('capstone_app/lstm_models')
 # Create your views here.
 def home(request):
     sid = '^GSPC'
@@ -360,5 +360,9 @@ def performance(request):
     context['stock']=new_stock_list
     context['test']=performance_keys
     return render(request,"main/performance.html",context)
+def about (request):
+    return render(request,'./main/about.html')
+
 #/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
 #/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/manage.py
+#gunicorn capstone_website.wsgi:application
