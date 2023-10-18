@@ -1,7 +1,12 @@
 {% extends 'main/base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block title %}Benchmark Page {% endblock %}
 {% block content %}
+<!--
 <img src="../../static/images/benchmark.jpg"  width=100% height=100%>
+-->
+<img src="{% static 'images/benchmark.jpg' %}" width="100%" height="100%">
+
 <h1 class="text-center">RMSE value: {{rmse}}</h1>
 {% endblock %}

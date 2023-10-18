@@ -47,6 +47,8 @@ def home(request):
         if form.is_valid():
             stock = request.POST['stock']
             tick=yf.Ticker(stock)
+            print(stock)
+            print("fadfjk;lafdj;ldf")
             if not check_stock_symbol(stock):
                 messages.error(request, 'Stock does not exist')
                 return redirect('/home')
@@ -187,12 +189,12 @@ def stocks(request,sid):
     context['form']=form
     return render(request,'main/stocks.html',context)
 
-API_KEY = "MO4HBDRDZNNUGH79 "
+API_KEY = "ZBLOKMLK3V8LXX11"
 def get_company_name(symbol):
     if symbol.upper()== "^GSPC":
         company_name="S&P 500"
         return company_name
-    url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey=API_KEY'
+    url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey={API_KEY}'
     response = requests.get(url)
     data = response.json()
     company_name = data['Name']
@@ -202,7 +204,7 @@ REQUESTS_TIMEOUT = 5
 
 @lru_cache(maxsize=128)
 def get_api_data(symbol):
-    url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey=API_KEY"
+    url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey={API_KEY}"
     response = requests.get(url, timeout=REQUESTS_TIMEOUT)
     return response.json()
 
@@ -360,9 +362,18 @@ def performance(request):
     context['stock']=new_stock_list
     context['test']=performance_keys
     return render(request,"main/performance.html",context)
+#<<<<<<< HEAD
 def about (request):
     return render(request,'./main/about.html')
 
 #/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
 #/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/manage.py
 #gunicorn capstone_website.wsgi:application
+#=======
+
+def about(request):
+     return render(request,'./main/about.html')
+#/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
+#/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/manage.py
+
+>>>>>>> 32eb2d8a70b740410e43bfbe2fb2d38dfd8ad4ef
