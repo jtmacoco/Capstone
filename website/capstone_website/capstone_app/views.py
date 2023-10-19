@@ -47,8 +47,6 @@ def home(request):
         if form.is_valid():
             stock = request.POST['stock']
             tick=yf.Ticker(stock)
-            print(stock)
-            print("fadfjk;lafdj;ldf")
             if not check_stock_symbol(stock):
                 messages.error(request, 'Stock does not exist')
                 return redirect('/home')
@@ -60,7 +58,6 @@ def home(request):
     flag=False
     if 'add to portfolio' in request.POST:
         if check_portoflio_exist(cur_user) == False:
-            print("IT DO NOT EXIST")
             performance_object=models.Performance()
             start_date=date.today()
             name=str(cur_user)
@@ -70,8 +67,6 @@ def home(request):
             performance_object.set_data(name,start_date,stock_price_list,predicted_price_list)
             performance_object.save()
             flag=True
-        else:
-            print("IT DOES EXIST")
         stock_data = models.Stock.objects.filter(stock_name=sid)
         if stock_data.exists() == False:
             stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
@@ -140,7 +135,6 @@ def stocks(request,sid):
     flag=False
     if 'add to portfolio' in request.POST:
         if check_portoflio_exist(cur_user) == False:
-            print("IT DO NOT EXIST")
             performance_object=models.Performance()
             start_date=date.today()
             name=str(cur_user)
@@ -150,8 +144,6 @@ def stocks(request,sid):
             performance_object.set_data(name,start_date,stock_price_list,predicted_price_list)
             performance_object.save()
             flag=True
-        else:
-            print("IT DOES EXIST")
         stock_data = models.Stock.objects.filter(stock_name=sid)
         if stock_data.exists() == False:
             stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
@@ -362,18 +354,6 @@ def performance(request):
     context['stock']=new_stock_list
     context['test']=performance_keys
     return render(request,"main/performance.html",context)
-#<<<<<<< HEAD
 def about (request):
     return render(request,'./main/about.html')
 
-#/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
-#/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/manage.py
-#gunicorn capstone_website.wsgi:application
-#=======
-
-def about(request):
-     return render(request,'./main/about.html')
-#/Users/jtm613/spring23/capstone/Capstone/website/my_venv/bin/python
-#/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/manage.py
-
->>>>>>> 32eb2d8a70b740410e43bfbe2fb2d38dfd8ad4ef
