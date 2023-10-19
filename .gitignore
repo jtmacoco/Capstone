@@ -1,3 +1,5 @@
 .hidden
 .env
 my_venv/
+.ipynb_checkpoints
+Stock_Predictor.ipynb
