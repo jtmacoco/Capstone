@@ -8,4 +8,4 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ["username","email","password1","password2"]
 class StocksForm(forms.Form):
-    stock=forms.CharField(label='Stock',max_length=50)        
+    stock=forms.CharField(label='Stock Symbol',max_length=50)        
