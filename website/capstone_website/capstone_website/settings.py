@@ -26,14 +26,9 @@ SECRET_KEY = config("SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG') 
+DEBUG = True 
 
-ALLOWED_HOSTS = ['0.0.0.0']
-#<<<<<<< HEAD
-#ALLOWED_HOSTS = ['*']
-#ALLOWED_HOSTS = ['35.203.145.183']
-#=======
-#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = ['stock-predictor.com', 'www.stock-predictor.com', '10.168.0.5','35.235.78.234','34.160.84.170']
 
 # Application definition
@@ -54,6 +49,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.http.ConditionalGetMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -130,7 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
@@ -140,3 +136,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/home'
 LOGOUT_REDIRECT_URL = '/login/'
+CSRF_TRUSTED_ORIGINS = ['https://stock-predictor.com','https://www.stock-predictor.com','https://*.127.0.0.1']

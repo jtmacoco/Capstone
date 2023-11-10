@@ -1,10 +1,10 @@
-version: '3.9'
+version: '3.11.2'
 
 services:
   web:
     build: .
     volumes:
-       - .:/code
+      - .:/code
     ports:
-       - "8000:8000"
-    command: bash -c "source /code/my_venv/bin/activate && python /code/capstone_website/manage.py runserver 0.0.0.0:8000"
+      - "8000:8000"
+    command: bash -c "source /code/my_venv/bin/activate && cd capstone_website && gunicorn -b 0.0.0.0:8000 --timeout 120 capstone_website.wsgi:application"

@@ -20,7 +20,9 @@ from django.contrib import messages
 from datetime import timedelta
 from django.utils.timezone import now
 #model = keras.models.load_model('/Users/jtm613/spring23/capstone/Capstone/website/capstone_website/capstone_app/lstm_models/')
-model = keras.models.load_model('/var/www/html/Capstone/website/capstone_website/capstone_app/lstm_models')
+#model = keras.models.load_model('/var/www/html/Capstone/website/capstone_website/capstone_app/lstm_models')
+#model = keras.models.load_model('/home/pi/Capstone/website/capstone_website/capstone_app/lstm_models')
+model = keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
 def get_predicted_price(sid):
     s=yf.Ticker(sid)
     stock=s.history(start="1970-01-01")

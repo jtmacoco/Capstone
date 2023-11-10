@@ -1,2 +1,8 @@
+For using gcp:
 cd /var/www/html/Capstone/website/capstone_website/ && python3 /var/www/html/Capstone/website/capstone_website/manage.py update_stock_prices
 cd /var/www/html/Capstone/website/capstone_website/ && python3 /var/www/html/Capstone/website/capstone_website/manage.py update_performance_prices
+
+For using raspberry pi:
+0 16 * * * /bin/sh -c 'docker exec d77d1bdd1a81 python /code/capstone_website/manage.py update_stock_prices' >> /home/pi/cron.log 2>&1
+0 16 * * * /bin/sh -c 'docker exec d77d1bdd1a81 python /code/capstone_website/manage.py update_performance_prices' >> /home/pi/cron.log 2>&1
+

@@ -37,6 +37,7 @@ from plotly.subplots import make_subplots
 
 model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
 #model=keras.models.load_model('capstone_app/lstm_models')
+#model=keras.models.load_model('/home/pi/Capstone/website/capstone_website/capstone_app/lstm_models')
 # Create your views here.
 def home(request):
     sid = '^GSPC'
