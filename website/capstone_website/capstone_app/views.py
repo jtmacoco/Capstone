@@ -1,42 +1,27 @@
-from gc import get_objects
-from django.shortcuts import get_object_or_404
-import json
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
 import requests
-import urllib.request
-from django.contrib.auth import get_user_model
-import urllib3
 from . forms import RegisterForm
 from . forms import StocksForm
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login
 import pandas as pd
 import yfinance as yf
-from joblib import load
 from tensorflow import keras
 import pandas as pd
-import datetime
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import MinMaxScaler
-import matplotlib.pyplot as plt
 import plotly.express as px 
 import numpy as np
 from keras.layers import *
 from keras.models import *
-import tensorflow as tf
 from . import models
-from django.contrib.auth.models import User
 from django.contrib import messages
 from datetime import timedelta
-from django.utils.timezone import now
-import asyncio
-from functools import lru_cache
 from datetime import date
 from plotly.subplots import make_subplots
 
-model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
-#model=keras.models.load_model('capstone_app/lstm_models')
+#model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
+model=keras.models.load_model('capstone_app/lstm_models')
 #model=keras.models.load_model('/home/pi/Capstone/website/capstone_website/capstone_app/lstm_models')
 # Create your views here.
 def home(request):
@@ -103,7 +88,6 @@ def home(request):
     context['predict']=round(float(predicted_price),2)
     context['graph']=graph.to_html()
     context['form']=form
-    #return render(request,'main/home.html')
     return render(request,'main/home.html',context)
 
 def portfolio(request):
@@ -182,7 +166,7 @@ def stocks(request,sid):
     context['form']=form
     return render(request,'main/stocks.html',context)
 
-API_KEY = "ZBLOKMLK3V8LXX11"
+API_KEY = "LPUZTEXYNRZD6BD2"
 def get_company_name(symbol):
     if symbol.upper()== "^GSPC":
         company_name="S&P 500"
@@ -193,27 +177,11 @@ def get_company_name(symbol):
     company_name = data['Name']
     return company_name
 
-REQUESTS_TIMEOUT = 5
-
-@lru_cache(maxsize=128)
-def get_api_data(symbol):
-    url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey={API_KEY}"
-    response = requests.get(url, timeout=REQUESTS_TIMEOUT)
-    return response.json()
-
 def check_stock_symbol(symbol):
     if symbol.lower() == "^gspc" or symbol.lower() == "^ixic" or symbol.lower() == "favicon.ico":
         return True
-    data = get_api_data(symbol)
-
-    if "bestMatches" in data:
-        matches = data["bestMatches"]
-        if len(matches) > 0:
-            for match in matches:
-                if match["1. symbol"].lower() == symbol.lower():
-                    return True
-    return False
-
+    info = yf.Ticker(symbol).history(period='7d',interval='1d')
+    return len(info)>0
 def check_duplicates(sid,user_name):
     portfolio_objects=models.Portfolio.objects.all()
     for p_object in portfolio_objects:
