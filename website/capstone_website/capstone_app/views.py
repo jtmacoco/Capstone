@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
+import locale
 import requests
 from . forms import RegisterForm
 from . forms import StocksForm
@@ -19,10 +20,10 @@ from django.contrib import messages
 from datetime import timedelta
 from datetime import date
 from plotly.subplots import make_subplots
-
 #model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
 model=keras.models.load_model('capstone_app/lstm_models')
 #model=keras.models.load_model('/home/pi/Capstone/website/capstone_website/capstone_app/lstm_models')
+locale.setlocale(locale.LC_ALL, 'en_US')
 # Create your views here.
 def home(request):
     sid = '^GSPC'
@@ -85,7 +86,8 @@ def home(request):
     context={}
     context['stocks']='^GSPC'
     context['company_name']=company_name
-    context['predict']=round(float(predicted_price),2)
+    locale.format("%.2f",round(float(predicted_price),2), grouping=True)
+    context['predict']=locale.format("%.2f",round(float(predicted_price),2), grouping=True)
     context['graph']=graph.to_html()
     context['form']=form
     return render(request,'main/home.html',context)
@@ -161,7 +163,7 @@ def stocks(request,sid):
     context={}
     context['stocks']=sid.upper()
     context['company_name']=company_name
-    context['predict']=round(float(predicted_price),2)
+    context['predict']=locale.format("%.2f",round(float(predicted_price),2), grouping=True)
     context['graph']=graph.to_html()
     context['form']=form
     return render(request,'main/stocks.html',context)
@@ -214,7 +216,7 @@ def get_predicted_price(sid):
     return round(float(predicted),2)
 
 def benchmark(request):
-    rmse=2.704493284395157
+    rmse=2.70449
     test_context={}
     test_context['rmse']=rmse
     return render(request,'main/benchmark.html',test_context)
@@ -314,8 +316,6 @@ def performance(request):
         dates = [start_date + timedelta(days=i) for i in range(list_size)]
         df = pd.DataFrame({'Date': dates, 'Actual Portfolio Price': new_stock_list, 'Predicted Portfolio Price': new_predicted_list})
         graph = px.scatter(df, x='Date', y=['Actual Portfolio Price', 'Predicted Portfolio Price'], title='Performance Data')
-
-    
     context={}
     context['flag']=flag
     context['graph']=graph.to_html()

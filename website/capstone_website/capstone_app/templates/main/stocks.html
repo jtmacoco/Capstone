@@ -11,19 +11,26 @@
   {% endfor %}
   {% endif %}
 </ul>
-<form method="post">
+<form method="post" class="px-2">
   {% csrf_token %}
   {{form|crispy}}
-  <input type="submit" class="btn btn-success" name="Submit" value="Submit">
+    <div class="submit_button float-start">
+      <input type="submit" class="btn" name="Submit" value="Submit">
+  </div>
 </form>
 {% if user.is_authenticated %}
-<form method="post">
+<form method="post" class="px-2">
   {% csrf_token %}
-  <input type="submit" class="btn btn-primary btn-lg float-end" name="add to portfolio" value="add to portfolio">
+  <div class="add_to_button float-end">
+    <input type="submit" name="add_to_portfolio" value="Add to Portfolio" class="">
+  </div>
 </form>
 {%else%}
-<a class="btn btn-primary btn-lg float-end" href="/login/">add to portfolio
-</a>
+<div class="px-2">
+  <button class="add_to_button float-end">
+    <a href="/login/">add to portfolio</a>
+  </button>
+</div>
 
 {%endif%}
 {% if company_name == "Stock Name not found" %}

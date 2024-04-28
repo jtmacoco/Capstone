@@ -2,18 +2,33 @@
 {% load crispy_forms_tags %}
 {% block title %}Edit Portfolio Page {% endblock %}
 {% block content %}
-<a href="/portfolio" class="btn btn-secondary float-end" role="button">Finished</a>
+<div class="pt-3 px-4 row justify-content-end">
+    <div class="col-auto">
+        <button class="primary_button">
+            <a href="/portfolio">Finished</a>
+        </button>
+    </div>
+</div>
 <div class="row allign-items-center" style="padding: 5%;">
     {% for key, values in stock_data.items %}
     <div class="col-md-3">
         <div class="card text-white bg-dark mb-3" style="max-width:20rem;">
             <div class="card-body">
                 <h5 class="card-title">
-                    <form method="post">
+                    <form method="post" class="row justify-content-end pr-4">
                         {% csrf_token %}
-                        <a href="{% url 'delete_stock' key %}" class="btn btn-danger btn-sm float-end" name="{{key}}"
-                            value="delete"> delete
-                        </a>
+                        <button class="noselect delete_button">
+                            <span class="text">
+                                <a class="" href="{% url 'delete_stock' key %}" name="{{key}}" value="delete"> delete
+                                </a>
+                            </span>
+                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z">
+                                    </path>
+                                </svg>
+                        </button>
                     </form>
                     {{ key }}
 

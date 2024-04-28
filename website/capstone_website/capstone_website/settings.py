@@ -26,7 +26,7 @@ SECRET_KEY = config("SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True 
 
 ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = ['stock-predictor.com', 'www.stock-predictor.com', '10.168.0.5','35.235.78.234','34.160.84.170']
