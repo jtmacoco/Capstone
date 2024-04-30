@@ -20,7 +20,8 @@ def get_update_stocks():
         stock=portfolio.stocks.stock_name
         stock_data=yf.Ticker(stock)
         stock_history = stock_data.history(period='1d')
-        performance[str(portfolio.author)]+=round(float(stock_history['Close'].iloc[-1]),2)
+        if not stock_history.empty:
+            performance[str(portfolio.author)]+=round(float(stock_history['Close'].iloc[-1]),2)
     return performance
 
 class Command(BaseCommand):

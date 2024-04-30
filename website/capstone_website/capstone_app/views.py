@@ -20,8 +20,8 @@ from django.contrib import messages
 from datetime import timedelta
 from datetime import date
 from plotly.subplots import make_subplots
-#model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
-model=keras.models.load_model('capstone_app/lstm_models')
+model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
+#model=keras.models.load_model('capstone_app/lstm_models')
 #model=keras.models.load_model('/home/pi/Capstone/website/capstone_website/capstone_app/lstm_models')
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 # Create your views here.
