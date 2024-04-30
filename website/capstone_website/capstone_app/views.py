@@ -23,7 +23,7 @@ from plotly.subplots import make_subplots
 #model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
 model=keras.models.load_model('capstone_app/lstm_models')
 #model=keras.models.load_model('/home/pi/Capstone/website/capstone_website/capstone_app/lstm_models')
-locale.setlocale(locale.LC_ALL, 'en_US')
+locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 # Create your views here.
 def home(request):
     sid = '^GSPC'
@@ -44,41 +44,7 @@ def home(request):
     cur_user=request.user
     flag=False
     if 'add to portfolio' in request.POST:
-        if check_portoflio_exist(cur_user) == False:
-            performance_object=models.Performance()
-            start_date=date.today()
-            name=str(cur_user)
-            stock_price_list=[]
-            predicted_price_list=[]
-            performance_object.name = name
-            performance_object.set_data(name,start_date,stock_price_list,predicted_price_list)
-            performance_object.save()
-            flag=True
-        stock_data = models.Stock.objects.filter(stock_name=sid)
-        if stock_data.exists() == False:
-            stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
-            stock_data.save()
-        else:
-            stock_data=models.Stock.objects.get(stock_name=sid)
-        portfolio = models.Portfolio.objects.filter(author=request.user, stocks = stock_data)
-        if portfolio.exists() == False:
-            portfolio = models.Portfolio(author=request.user,stocks=stock_data)
-            portfolio.save()
-        if flag == True:
-            predicted_dict=get_update_predicted()
-            stock_dict=get_update_stocks()
-            performance_keys=list(predicted_dict)
-            performances = models.Performance.objects.all()
-            for performance in performances:
-                stock_price_list = performance.performance_data.get('stock_price_list', [])
-                predicted_price_list = performance.performance_data.get('predicted_price_list', [])
-                if str(cur_user) in performance_keys and str(cur_user) == performance.get_name():
-                    stock_price_list.append(stock_dict[str(cur_user)])
-                    predicted_price_list.append(predicted_dict[str(cur_user)])
-
-                performance.performance_data['stock_price_list'] = stock_price_list
-                performance.performance_data['predicted_price_list'] = predicted_price_list
-                performance.save()
+        addToPortfolio(request,cur_user,sid,predicted_price)
     try:
         company_name = get_company_name("^GSPC")
     except:
@@ -121,41 +87,7 @@ def stocks(request,sid):
     cur_user=request.user
     flag=False
     if 'add to portfolio' in request.POST:
-        if check_portoflio_exist(cur_user) == False:
-            performance_object=models.Performance()
-            start_date=date.today()
-            name=str(cur_user)
-            predicted_price_list=[]
-            stock_price_list=[]
-            performance_object.name = name
-            performance_object.set_data(name,start_date,stock_price_list,predicted_price_list)
-            performance_object.save()
-            flag=True
-        stock_data = models.Stock.objects.filter(stock_name=sid)
-        if stock_data.exists() == False:
-            stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
-            stock_data.save()
-        else:
-            stock_data=models.Stock.objects.get(stock_name=sid)
-        portfolio = models.Portfolio.objects.filter(author=request.user, stocks = stock_data)
-        if portfolio.exists() == False:
-            portfolio = models.Portfolio(author=request.user,stocks=stock_data)
-            portfolio.save()
-        if flag == True:
-            predicted_dict=get_update_predicted()
-            stock_dict=get_update_stocks()
-            performance_keys=list(predicted_dict)
-            performances = models.Performance.objects.all()
-            for performance in performances:
-                stock_price_list = performance.performance_data.get('stock_price_list', [])
-                predicted_price_list = performance.performance_data.get('predicted_price_list', [])
-                if str(cur_user) in performance_keys and str(cur_user) == performance.get_name():
-                    stock_price_list.append(stock_dict[str(cur_user)])
-                    predicted_price_list.append(predicted_dict[str(cur_user)])
-
-                performance.performance_data['stock_price_list'] = stock_price_list
-                performance.performance_data['predicted_price_list'] = predicted_price_list
-                performance.save()
+       addToPortfolio(request,cur_user,sid,predicted_price) 
     try:
         company_name = get_company_name(sid)
     except:
@@ -284,7 +216,8 @@ def get_update_stocks():
         stock=portfolio.stocks.stock_name
         stock_data=yf.Ticker(stock)
         stock_history = stock_data.history(period='1d')
-        performance[str(portfolio.author)]+=round(float(stock_history['Close'].iloc[-1]),2)
+        if not stock_history.empty:
+            performance[str(portfolio.author)]+=round(float(stock_history['Close'].iloc[-1]),2)
     return performance
 
 def performance(request):
@@ -326,3 +259,46 @@ def performance(request):
 def about (request):
     return render(request,'./main/about.html')
 
+def createPortfolio(cur_user):
+    performance_object=models.Performance()
+    start_date=date.today()
+    name=str(cur_user)
+    stock_price_list=[]
+    predicted_price_list=[]
+    performance_object.name = name
+    performance_object.set_data(name,start_date,stock_price_list,predicted_price_list)
+    performance_object.save()
+    return True
+
+def updatedPerformance(cur_user):
+    predicted_dict=get_update_predicted()
+    stock_dict=get_update_stocks()
+    performance_keys=list(predicted_dict)
+    performances = models.Performance.objects.all()
+    for performance in performances:
+        stock_price_list = performance.performance_data.get('stock_price_list', [])
+        predicted_price_list = performance.performance_data.get('predicted_price_list', [])
+        if str(cur_user) in performance_keys and str(cur_user) == performance.get_name():
+            stock_price_list.append(stock_dict[str(cur_user)])
+            predicted_price_list.append(predicted_dict[str(cur_user)])
+
+        performance.performance_data['stock_price_list'] = stock_price_list
+        performance.performance_data['predicted_price_list'] = predicted_price_list
+        performance.save()
+
+def addToPortfolio(request,cur_user,sid,predicted_price):
+    flag = False
+    if check_portoflio_exist(cur_user) == False:
+            flag = createPortfolio(cur_user)
+    stock_data = models.Stock.objects.filter(stock_name=sid)
+    if stock_data.exists() == False:
+        stock_data = models.Stock(stock_name=sid.upper(),closing_price=predicted_price)
+        stock_data.save()
+    else:
+        stock_data=models.Stock.objects.get(stock_name=sid)
+    portfolio_stock = models.Portfolio.objects.filter(author=request.user, stocks = stock_data)
+    if portfolio_stock.exists() == False:
+        portfolio_stock = models.Portfolio(author=request.user,stocks=stock_data)
+        portfolio_stock.save()
+    if flag == True:
+        updatedPerformance(cur_user) 
