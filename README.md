@@ -6,7 +6,7 @@
 This is a web-based platform designed to visualize historical stock data and predict future price trends. By leveraging Long Short-Term Memory (LSTM) neural networks, the application processes historical closing prices to provide insights into potential market movements.
 
 # Features
-- Real-time Data Fetching: Integrates with financial APIs (like Yahoo Finance or Alpha Vantage) to pull the latest ticker data.
+- Real-time Data Fetching: Integrates with financial APIs (like Yahoo Finance) to pull the latest ticker data.
 
 - Deep Learning Model: Uses a TensorFlow-backed LSTM model trained on time-series data.
 
