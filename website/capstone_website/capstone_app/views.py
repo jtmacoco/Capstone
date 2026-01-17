@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
+from dotenv import load_dotenv
 import locale
 import requests
 from . forms import RegisterForm
@@ -24,11 +25,12 @@ model=keras.models.load_model('/code/capstone_website/capstone_app/lstm_models')
 #model=keras.models.load_model('capstone_app/lstm_models')
 #model=keras.models.load_model('/home/pi/Capstone/website/capstone_website/capstone_app/lstm_models')
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+load_dotenv()
 # Create your views here.
 def home(request):
     sid = '^GSPC'
-    predicted_price=get_predicted_price('^GSPC')
-    graph=get_graph('^GSPC')
+    predicted_price=get_predicted_price(sid)
+    graph=get_graph(sid)
     if 'Submit' in request.POST:
         form=StocksForm(request.POST)
         if form.is_valid():
@@ -100,8 +102,8 @@ def stocks(request,sid):
     context['form']=form
     return render(request,'main/stocks.html',context)
 
-API_KEY = "LPUZTEXYNRZD6BD2"
 def get_company_name(symbol):
+    API_KEY = os.getenv("ALPAH_KEY")
     if symbol.upper()== "^GSPC":
         company_name="S&P 500"
         return company_name
@@ -132,6 +134,7 @@ def get_graph(sid):
     return graph
 
 def get_predicted_price(sid):
+    s = sid.upper()
     s=yf.Ticker(sid)
     stock=s.history(start="1970-01-01")
     stock_close=stock[['Close']]
@@ -139,11 +142,11 @@ def get_predicted_price(sid):
     scaler.fit_transform(stock_close)
     prev=stock_close[-30:].values
     scale_prev=scaler.transform(prev)
-    input=[]
-    input.append(scale_prev)
-    input=np.array(input)
-    input=np.reshape(input,(input.shape[0],input.shape[1],1))
-    predicted=model.predict(input)
+    inputs=[]
+    inputs.append(scale_prev)
+    inputs=np.array(inputs)
+    inputs=np.reshape(inputs,(inputs.shape[0],inputs.shape[1],1))
+    predicted=model.predict(inputs)
     predicted=scaler.inverse_transform(predicted)
     return round(float(predicted),2)
 

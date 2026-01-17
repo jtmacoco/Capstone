@@ -11,22 +11,28 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
+#from decouple import Config, RepositoryEnv
+from dotenv import load_dotenv
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(BASE_DIR / ".env")  # explicitly load the .env
+SECRET_KEY = os.environ.get("SECRET_KEY")
+if not SECRET_KEY:
+    print("FUCK ME:",SECRET_KEY)
+    raise RuntimeError("SECRET_KEY not set")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY = os.environ['SECRET_KEY']
-SECRET_KEY = config("SECRET_KEY")
+#config = Config(RepositoryEnv(BASE_DIR / ".env"))
+#SECRET_KEY = config("SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = ['stock-predictor.com', 'www.stock-predictor.com', '10.168.0.5','35.235.78.234','34.160.84.170']
