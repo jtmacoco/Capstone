@@ -2,7 +2,7 @@
 .env
 my_venv/
 .ipynb_checkpoints
-Stock_Predictor.ipynb
+#Stock_Predictor.ipynb
 *.pyc
 *.pyo
 __pycache__/
